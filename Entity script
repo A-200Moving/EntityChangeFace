@@ -1,0 +1,91 @@
+local Room = workspace.SpawnLocation
+local Door = workspace.CFrameDoor
+local Noor = Instance.new("Part")
+Noor.CFrame = Room.CFrame+Vector3.new(0,2.5,0)
+Noor.Transparency = 1
+Noor.CanCollide = false
+Noor.Anchored = true
+
+local Cyan = game:GetObjects("rbxassetid://0")[1]
+Cyan.Parent = workspace
+Cyan.PrimaryPart.CFrame = workspace.SpawnLocation.CFrame+Vector3.new(0,2.5,0)
+
+-- Hitbox 1 (Both Hitbox and Raycast are Needed)
+local Hitbox = Instance.new("Part")
+Hitbox.Parent = Cyan.PrimaryPart
+Hitbox.Transparency = 1
+Hitbox.Anchored = true
+Hitbox.CanCollide = false
+Hitbox.Size = Vector3.new(50,50,15)
+Hitbox.CFrame = Cyan.PrimaryPart.CFrame
+
+-- Delay
+wait(5)
+
+-- Raycast 1
+				--------------
+				local function canSeeTarget(target,size)
+					if killed == true then
+						return
+					end
+					local origin = Hitbox.Position
+					local direction = (target.HumanoidRootPart.Position - Hitbox.Position).unit * size
+					local ray = Ray.new(origin, direction)
+
+					local hit, pos = workspace:FindPartOnRay(ray, Hitbox)
+
+
+					if hit then
+						if hit:IsDescendantOf(target) then
+							killed = true
+							return true
+						end
+					else
+						return false
+					end
+				end
+				-------------------------
+				spawn(function()
+					while Cyan ~= nil do wait(0.2)
+						local v = game.Players.LocalPlayer
+						local parent = script.Parent
+					    if v.PlayerGui.hiding.Heartbeat.Playing == false then
+							if canSeeTarget(v.Character,50) then
+								v.Character:FindFirstChildWhichIsA("Humanoid"):TakeDamage(1000)
+							end
+						end
+					end
+				end)
+				----------------------
+				
+Hitbox.Touched:Connect(function(Part)
+    if Part.Parent:FindFirstChild("Humanoid") then
+        if v.PlayerGui.hiding.Heartbeat.Playing == false then
+            v.Character:FindFirstChildWhichIsA("Humanoid"):TakeDamage(1000)
+        end
+    end
+end)
+
+-- Move
+
+local Speed = 5
+local Delay = 2
+
+-- Rush
+game.TweenService:Create(Cyan.PrimaryPart,TweenInfo.new(Speed),{CFrame = Door.CFrame}):Play()
+game.TweenService:Create(Hitbox,TweenInfo.new(Speed),{CFrame = Door.CFrame}):Play()
+wait(Speed)
+
+-- Ambush
+game.TweenService:Create(Cyan.PrimaryPart,TweenInfo.new(Speed),{CFrame = Door.CFrame}):Play()
+game.TweenService:Create(Hitbox,TweenInfo.new(Speed),{CFrame = Door.CFrame}):Play()
+wait(Speed)
+game.TweenService:Create(Cyan.PrimaryPart,TweenInfo.new(Speed),{CFrame = Noor.CFrame}):Play()
+game.TweenService:Create(Hitbox,TweenInfo.new(Speed),{CFrame = Noor.CFrame}):Play()
+wait(Speed)
+wait(Delay)
+
+-- Despawn
+Hitbox:Destroy()
+Cyan:Destroy()
+Noor:Destroy()
